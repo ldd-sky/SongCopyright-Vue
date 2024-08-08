@@ -15,8 +15,17 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  const reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/
+  return reg.test(str.trim())
+}
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validRealname(str) {
+  const reg = /^([a-zA-Z]+|[\u4e00-\u9fa5]+)$/
+  return reg.test(str.trim())
 }
 
 /**
@@ -60,8 +69,17 @@ export function validAlphabets(str) {
  * @returns {Boolean}
  */
 export function validEmail(email) {
-  const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return reg.test(email)
+}
+
+/**
+ * @param {string} phone
+ * @returns {Boolean}
+ */
+export function validPhone(phone) {
+  const reg = /^1[3-9]\d{9}$/
+  return reg.test(phone)
 }
 
 /**
@@ -69,10 +87,7 @@ export function validEmail(email) {
  * @returns {Boolean}
  */
 export function isString(str) {
-  if (typeof str === 'string' || str instanceof String) {
-    return true
-  }
-  return false
+  return typeof str === 'string' || str instanceof String
 }
 
 /**
@@ -84,4 +99,13 @@ export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]'
   }
   return Array.isArray(arg)
+}
+
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validVerifyCode(str) {
+  const reg = /^[a-zA-Z0-9]+$/
+  return reg.test(str.trim())
 }

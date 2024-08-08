@@ -1,9 +1,9 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" class="login-form">
+    <el-form ref="loginForm" :model="registerForm " :rules="registerRules" class="login-form">
 
       <div class="title-container">
-        <h3 class="title">注册表单</h3>
+        <h3 class="title">用户注册</h3>
       </div>
 
       <el-form-item prop="username">
@@ -12,8 +12,8 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
-          placeholder="用户名"
+          v-model="registerForm.username"
+          placeholder="用户名，仅可包含中英文及下划线"
           type="text"
           tabindex="1"
           @blur="reload"
@@ -26,7 +26,7 @@
         </span>
         <el-input
           ref="realname"
-          v-model="loginForm.realname"
+          v-model="registerForm.realname"
           placeholder="真实名"
           type="text"
           tabindex="1"
@@ -41,7 +41,7 @@
           <el-input
             :key="passwordType"
             ref="password"
-            v-model="loginForm.password"
+            v-model="registerForm.password"
             :type="passwordType"
             placeholder="密码"
             tabindex="2"
@@ -62,7 +62,7 @@
           <el-input
             :key="repasswordType"
             ref="repassword"
-            v-model="loginForm.repassword"
+            v-model="registerForm.repassword"
             :type="repasswordType"
             placeholder="确认密码"
             tabindex="3"
@@ -83,7 +83,7 @@
         </span>
         <el-input
           ref="phone"
-          v-model="loginForm.phone"
+          v-model="registerForm.phone"
           placeholder="请输入手机号"
           name="phone"
           type="text"
@@ -98,7 +98,7 @@
         </span>
         <el-input
           ref="email"
-          v-model="loginForm.email"
+          v-model="registerForm.email"
           placeholder="请输入邮箱"
           name="email"
           type="text"
@@ -112,7 +112,7 @@
         </span>
         <el-input
           ref="verifycode"
-          v-model="loginForm.verifycode"
+          v-model="registerForm.verifycode"
           placeholder="请输入验证码"
           name="verifycode"
           type="text"
@@ -130,11 +130,61 @@
 
 <script>
 import { register } from '@/api/user'
+import { validEmail, validPhone, validRealname, validUsername, validVerifyCode } from '@/utils/validate'
 
 export default {
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (!validUsername(value)) {
+        callback(new Error('请输入正确的用户名'))
+      } else {
+        callback()
+      }
+    }
+    const validateRealname = (rule, value, callback) => {
+      if (!validRealname(value)) {
+        callback(new Error('请输入正确的真实名'))
+      } else {
+        callback()
+      }
+    }
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能少于6位'))
+      } else {
+        callback()
+      }
+    }
+    const validateRepassword = (rule, value, callback) => {
+      if (value !== this.registerForm.password) {
+        callback(new Error('两次输入的密码不一致'))
+      } else {
+        callback()
+      }
+    }
+    const validateEmail = (rule, value, callback) => {
+      if (!validEmail(value)) {
+        callback(new Error('请输入正确的邮箱地址'))
+      } else {
+        callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      if (!validPhone(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+    const validateVerifyCode = (rule, value, callback) => {
+      if (!validVerifyCode(value)) {
+        callback(new Error('请检查验证码'))
+      } else {
+        callback()
+      }
+    }
     return {
-      loginForm: {
+      registerForm: {
         username: '',
         realname: '',
         password: '',
@@ -142,6 +192,15 @@ export default {
         phone: '',
         email: '',
         verifycode: ''
+      },
+      registerRules: {
+        username: [{ required: true, trigger: 'change', validator: validateUsername }],
+        realname: [{ required: true, trigger: 'blur', validator: validateRealname }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        repassword: [{ required: true, trigger: 'blur', validator: validateRepassword }],
+        phone: [{ required: true, trigger: 'blur', validator: validatePhone }],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        verifycode: [{ required: true, trigger: 'blur', validator: validateVerifyCode }]
       },
       capsTooltip: false,
       passwordType: 'password',
@@ -180,10 +239,10 @@ export default {
       this.recapsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
     },
     reload() {
-      this.verifycodeImg = `${process.env.VUE_APP_BASE_API}/verify-code/${this.loginForm.username}?t=` + new Date().getTime()
+      this.verifycodeImg = `${process.env.VUE_APP_BASE_API}/verify-code/${this.registerForm.username}?t=` + new Date().getTime()
     },
     async userRegister() {
-      const { data } = await register(this.loginForm)
+      const { data } = await register(this.registerForm)
       this.$message({
         message: data,
         type: 'success'

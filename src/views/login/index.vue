@@ -108,36 +108,53 @@
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
 import SocialSign from './components/SocialSignin'
 import { send } from '@/api/user'
+import { validEmail, validUsername, validVerifyCode } from '@/utils/validate'
 
 export default {
   name: 'Login',
   components: { SocialSign },
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error('请输入正确的用户名'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
-    // const validatePassword = (rule, value, callback) => {
-    //   if (value.length < 6) {
-    //     callback(new Error('密码不能少于6位'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
+    const validateUsername = (rule, value, callback) => {
+      if (!validUsername(value)) {
+        callback(new Error('请输入正确的用户名'))
+      } else {
+        callback()
+      }
+    }
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('密码不能少于6位'))
+      } else {
+        callback()
+      }
+    }
+    const validateEmail = (rule, value, callback) => {
+      if (!validEmail(value)) {
+        callback(new Error('请输入正确的邮箱地址'))
+      } else {
+        callback()
+      }
+    }
+    const validateVerifyCode = (rule, value, callback) => {
+      if (!validVerifyCode(value)) {
+        callback(new Error('请检查验证码'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        verifycode: ''
       },
       loginRules: {
-        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        // password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        verifycode: [{ required: true, trigger: 'blur', validator: validateVerifyCode }]
       },
       passwordType: 'password',
       capsTooltip: false,

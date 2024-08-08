@@ -149,7 +149,9 @@ export default {
           this.loading = false
           if (response.data && response.data.records) {
             this.songs = response.data.records
-            if (response.data.total !== 0) {
+            if (response.data.total === -2) {
+              this.$message.error('请使用Chrome浏览器登陆网易云网页版保留Cookie后重试！')
+            } else if (response.data.total !== 0) {
               this.totalPages = Math.ceil(this.songs.length / this.pageSize)
               this.currentPage = response.data.current
             }
